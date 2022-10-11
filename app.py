@@ -24,6 +24,7 @@ from function import *
 
 app = Flask(__name__)
 
+# TESTING
 @app.route("/")
 def hello_world():
     name = "Andrew"
