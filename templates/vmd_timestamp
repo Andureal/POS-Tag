@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title></title>
+ <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body>
+<h2>Vehicle info Dashboard</h2>
+<p ><a href=vmd_timestamp ><button class=grey style="height:75px;width:150px">vmd timestamp</button></a></p>
+</body>
+</html>
