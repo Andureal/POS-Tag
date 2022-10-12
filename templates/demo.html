@@ -39,18 +39,32 @@
 
         <form  method="POST" action="{{url_for('demo')}}" onsubmit="false"> 
             <p>Key in your text</p>
-            <textarea type="text" name="nm" rows="5" cols="80"></textarea>
-            <p><input type="submit" value="submit"/></p>
+            <textarea id="input" type="text" name="nm" rows="5" cols="80" ></textarea>
+
+            <table>
+                <tr>
+                   <td><input type="submit" name="submit" value= "submit"></td>
+                   <td><input type="submit" name="submitt" value= "submitt"></td>
+                   <td><input type="submit" name="submittt" value= "submittt"></td>
+                </tr>
+            <table> 
+            
+
+            
         </form>
 
         
     </div>
 
-    <div>wtf
-        <textarea type="text" name="nm" rows="5" cols="80">{{ user }}</textarea>
+    <div class="w3-row-padding w3-padding-64 w3-container">
+        <div class="w3-content">
+            <textarea type="text" name="nm" rows="5" cols="80">{{ user }}</textarea>
+        </div>
     </div>
 
-    <p>{{ user }}</p>
+    {{us}}
+
+    
 </div>
 
 

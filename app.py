@@ -21,6 +21,7 @@ from nltk.tag.util import untag
 #from sklearn.externals import joblib
 import joblib
 from function import *
+from preprocessing import *
 
 app = Flask(__name__)
 
@@ -35,20 +36,15 @@ def hello_world():
 
 @app.route('/demo', methods=["GET", "POST"])
 def demo():
-
-    def pos_tag1(sentence, model):
-        sentence = sentence_splitter(sentence)
-        sentence_features = [features(sentence, index) for index in range(len(sentence))]
-        return list(zip(sentence, model.predict([sentence_features])[0]))
-        
     if request.method == "POST":
         user = request.form["nm"]
         user = user.lower()
+        us = request.form["submit"]
 
         loaded_model = joblib.load("Andrew_CRF_model.joblib")
-        user = pos_tag1("If u need pls rmb to request",loaded_model )
+        user = pos_tag1(user,loaded_model )
         #return redirect(url_for("demo"))
-        return render_template("demo.html",user=user)
+        return render_template("demo.html",user=user,us=us)
 
     else:
         return render_template("demo.html")
