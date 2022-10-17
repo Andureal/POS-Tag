@@ -41,16 +41,39 @@ def demo():
     if request.method == "POST":
         user = request.form["nm"]
         if request.form['submit_button'] == 'preprocess':
-            # user = normalise(user)
-            # user = remove_punct_url_at(user)
-            # user = remove_stopword_nltk(user)
-            # user = unicode_problem(user)
-            # user = remove_non_ascii(user)
-            user = remove_slashR(user)
-            user = remove_special_char(user)
-            user = remove_emoji(user)
+            user = normalise(str(user))
+            user = remove_punct_url_at(str(user))
+            
+            
+            user = remove_non_ascii(str(user))
+            user = remove_slashR(str(user))
+            user = remove_special_char(str(user))
+            user = remove_emoji(str(user))
+            user = remove_multiple_space(str(user))
+            user = remove_newline(str(user))
+            user = replace_apostrophes(str(user))
+            user = remove_multiple_comma(str(user))
+            user = remove_multiple_dot(str(user))
+            
+            
             
         elif request.form['submit_button'] == 'pos tag':
+            user = pos_tag1(user, loaded_model)
+        
+        elif request.form['submit_button'] == 'P & P':
+            user = normalise(str(user))
+            user = remove_punct_url_at(str(user))
+            
+            user = remove_non_ascii(str(user))
+            user = remove_slashR(str(user))
+            user = remove_special_char(str(user))
+            user = remove_emoji(str(user))
+            user = remove_multiple_space(str(user))
+            user = remove_newline(str(user))
+            user = replace_apostrophes(str(user))
+            user = remove_multiple_comma(str(user))
+            user = remove_multiple_dot(str(user))
+            
             user = pos_tag1(user, loaded_model)
         
         return render_template("demo.html",user=user)
@@ -58,6 +81,10 @@ def demo():
     else:
         return render_template("demo.html")
     
+@app.route('/crfmodel')
+def crfmodel():
+    return render_template("crfmodel.html")
+
 
 @app.route("/<usr>")
 def user(usr):
