@@ -32,17 +32,9 @@ from pyspark.sql.types import *
 from pyspark.ml.feature import Tokenizer
 from operator import add
 
-def sentence_splitter(sentence):
-    result = []
-    sents = word_tokenize(sentence)
-    for s in sents:
-        if re.findall(r'[\u4e00-\u9fff]+', s):
-            s = HanziConv.toSimplified(s)
-            result = result + list(jieba.cut(s, cut_all=False))
-        else:
-            result.append(s)
-    return result
 
+def convert_string2_list(text):
+    return ast.literal_eval(str(text))
 
 def features(sentence, index):
     # """ sentence: [w1, w2, ...], index: the index of the word """
@@ -88,7 +80,28 @@ def features(sentence, index):
         
     return feature_set
 
+
+def transform_to_dataset(tagged_sentences):
+    X, y = [], []
+ 
+    for tagged in tagged_sentences:
+        X.append([features(untag(tagged), index) for index in range(len(tagged))])
+        y.append([tag for _, tag in tagged])
+ 
+    return X, y
+
 def pos_tag1(sentence, model):
     sentence = sentence_splitter(sentence)
     sentence_features = [features(sentence, index) for index in range(len(sentence))]
     return list(zip(sentence, model.predict([sentence_features])[0]))
+
+def sentence_splitter(sentence):
+    result = []
+    sents = word_tokenize(sentence)
+    for s in sents:
+        if re.findall(r'[\u4e00-\u9fff]+', s):
+            s = HanziConv.toSimplified(s)
+            result = result + list(jieba.cut(s, cut_all=False))
+        else:
+            result.append(s)
+    return result

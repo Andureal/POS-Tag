@@ -1,0 +1,5 @@
+how to get flask to upload and display csv 
+https://thinkinfi.com/flask-upload-display-file/
+
+python flask return file to donwload
+https://pythonprogramming.net/flask-send-file-tutorial/
