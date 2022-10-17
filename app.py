@@ -1,3 +1,4 @@
+from os import name
 from flask import Flask,render_template
 from flask import request
 from flask import redirect
@@ -36,15 +37,23 @@ def hello_world():
 
 @app.route('/demo', methods=["GET", "POST"])
 def demo():
+    loaded_model = joblib.load("Andrew_CRF_model.joblib")
     if request.method == "POST":
         user = request.form["nm"]
-        user = user.lower()
-        us = request.form["submit"]
-
-        loaded_model = joblib.load("Andrew_CRF_model.joblib")
-        user = pos_tag1(user,loaded_model )
-        #return redirect(url_for("demo"))
-        return render_template("demo.html",user=user,us=us)
+        if request.form['submit_button'] == 'preprocess':
+            # user = normalise(user)
+            # user = remove_punct_url_at(user)
+            # user = remove_stopword_nltk(user)
+            # user = unicode_problem(user)
+            # user = remove_non_ascii(user)
+            user = remove_slashR(user)
+            user = remove_special_char(user)
+            user = remove_emoji(user)
+            
+        elif request.form['submit_button'] == 'pos tag':
+            user = pos_tag1(user, loaded_model)
+        
+        return render_template("demo.html",user=user)
 
     else:
         return render_template("demo.html")
