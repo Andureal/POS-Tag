@@ -24,6 +24,7 @@ import joblib
 from function import *
 from preprocessing import *
 
+
 ###############################################3
 from flask import Flask, render_template, request, session
 import pandas as pd
@@ -129,10 +130,34 @@ def showData():
     # read csv file in python flask (reading uploaded csv file from uploaded server location)
     uploaded_df = pd.read_csv(data_file_path)
 
-    data = uploaded_df["tagged"]
- 
-    # pandas dataframe to html table flask
-    uploaded_df_html = uploaded_df.to_html()
+    # data = uploaded_df["tagged"]
+    data = uploaded_df["tagged"].apply(convert_string2_list)
+
+    
+
+    cutoff = int(.80 * len(data))
+    training_sentences = data[:cutoff]
+    test_sentences = data[cutoff:]
+
+    X_train, y_train = transform_to_dataset(training_sentences)
+    #X_test, y_test = transform_to_dataset(test_sentences)
+
+    CRF_model_lbfgs = sklearn_crfsuite.CRF(
+        algorithm = 'lbfgs',
+        max_iterations = 100,
+        all_possible_transitions=True,
+        c1 = 0.25,
+        c2 = 0.35
+    )
+
+    CRF_model_lbfgs.fit(X_train, y_train)
+
+    data = data.to_frame()
+    uploaded_df_html = data.to_html()
+
+    filename = "latestCRF.joblib"
+    joblib.dump(CRF_model_lbfgs, filename)
+    
     return render_template('show_csv_data.html', data_var = uploaded_df_html)
 
 @app.route("/<usr>")
