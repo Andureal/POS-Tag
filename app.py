@@ -3,6 +3,7 @@ from flask import Flask,render_template
 from flask import request
 from flask import redirect
 from flask import url_for
+from flask import send_file
 
 import sklearn
 import sklearn_crfsuite
@@ -23,6 +24,7 @@ from nltk.tag.util import untag
 import joblib
 from function import *
 from preprocessing import *
+from pyspark import SparkConf, SparkContext
 
 
 ###############################################3
@@ -45,6 +47,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Define secret key to enable session
 app.secret_key = 'This is your secret key to utilize session in Flask'
 ############################################ 
+
+spark = SparkSession\
+        .builder.master("local[*]")\
+        .appName("textpreprocessing")\
+        .getOrCreate()
+
+spark.sparkContext.setLogLevel("ERROR")
 
 
 
@@ -152,13 +161,49 @@ def showData():
 
     CRF_model_lbfgs.fit(X_train, y_train)
 
-    data = data.to_frame()
-    uploaded_df_html = data.to_html()
+    # data = data.to_frame()
+    # uploaded_df_html = data.to_html()
 
     filename = "latestCRF.joblib"
     joblib.dump(CRF_model_lbfgs, filename)
     
-    return render_template('show_csv_data.html', data_var = uploaded_df_html)
+    return render_template('show_csv_data.html')
+
+@app.route('/return-files/')
+def return_files_tut():
+	try:
+		return send_file('latestCRF.joblib', as_attachment=True)
+	except Exception as e:
+		return str(e)
+
+@app.route("/melexpos",  methods=("POST", "GET"))
+def melexpos():
+    if request.method == 'POST':
+        # upload file flask
+        uploaded_df = request.files['uploaded-file']
+ 
+        # Extracting uploaded data file name
+        data_filename = secure_filename(uploaded_df.filename)
+ 
+        # flask upload file to database (defined uploaded folder in static path)
+        uploaded_df.save(os.path.join(app.config['UPLOAD_FOLDER'], data_filename))
+ 
+        # Storing uploaded file path in flask session
+        session['uploaded_data_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
+
+        # Retrieving uploaded file path from session
+        data_file_path = session.get('uploaded_data_file_path', None)
+    
+        # read csv file in python flask (reading uploaded csv file from uploaded server location)
+        uploaded_df = pd.read_csv(data_file_path)
+
+        uploaded_df.rename(columns = {'Tagged_Sentence' : 'tagged'}, inplace = True)
+        rdd_process = spark.sparkContext.textFile('/static/uploads/.csv')
+
+        # data = uploaded_df["tagged"]
+        data = uploaded_df["tagged"].apply(convert_string2_list)
+        return render_template('melexpos2.html')
+    return render_template('melexpos2.html')
 
 @app.route("/<usr>")
 def user(usr):
