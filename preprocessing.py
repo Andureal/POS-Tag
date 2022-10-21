@@ -83,6 +83,8 @@ def tokenise(text):
     text.split()
     return text 
 
+def f(x): return x
+
     # def remove_stopword_gensim(text):
 #     filtered_sentence = remove_stopwords(text)
 #     return filtered_sentence

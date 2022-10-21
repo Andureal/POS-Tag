@@ -48,12 +48,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'This is your secret key to utilize session in Flask'
 ############################################ 
 
-spark = SparkSession\
-        .builder.master("local[*]")\
-        .appName("textpreprocessing")\
-        .getOrCreate()
+# spark = SparkSession\
+#         .builder.master("local[*]")\
+#         .appName("textpreprocessing")\
+#         .getOrCreate()
 
-spark.sparkContext.setLogLevel("ERROR")
+#         # .builder.master("local[*]")\
+# # edit the spark session configuration to connect to taruc 
+# # https://stackoverflow.com/questions/44949246/can-we-able-to-use-mulitple-sparksessions-to-access-two-different-hive-servers
+
+# spark.sparkContext.setLogLevel("ERROR")
 
 
 
@@ -198,7 +202,7 @@ def melexpos():
         uploaded_df = pd.read_csv(data_file_path)
 
         uploaded_df.rename(columns = {'Tagged_Sentence' : 'tagged'}, inplace = True)
-        rdd_process = spark.sparkContext.textFile('/static/uploads/.csv')
+        
 
         # data = uploaded_df["tagged"]
         data = uploaded_df["tagged"].apply(convert_string2_list)
