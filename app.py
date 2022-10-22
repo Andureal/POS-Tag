@@ -195,19 +195,44 @@ def melexpos():
         # Storing uploaded file path in flask session
         session['uploaded_data_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
 
-        # Retrieving uploaded file path from session
-        data_file_path = session.get('uploaded_data_file_path', None)
+        return render_template('melexpos2.html')      
+    return render_template('melexpos.html') 
+
+###CRF MODEL TRAINING
+@app.route('/process_file')
+def processFile():
+    # Retrieving uploaded file path from session
+    data_file_path = session.get('uploaded_data_file_path', None)
+ 
+    # read csv file in python flask (reading uploaded csv file from uploaded server location)
+    uploaded_df = pd.read_csv(data_file_path)
+
+    #df['normalised_word'] = df['Word'].apply(pre.normalise)
+    #df['col1'] = df['col1'].apply(complex_function)
     
-        # read csv file in python flask (reading uploaded csv file from uploaded server location)
-        uploaded_df = pd.read_csv(data_file_path)
 
-        uploaded_df.rename(columns = {'Tagged_Sentence' : 'tagged'}, inplace = True)
-        
+    for row in range(len(uploaded_df)):
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_emoji)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(normalise)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_punct_url_at)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_non_ascii)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_slashR)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_special_char)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_multiple_space)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_newline)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(replace_apostrophes)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_multiple_comma)
+        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_multiple_dot)
 
-        # data = uploaded_df["tagged"]
-        data = uploaded_df["tagged"].apply(convert_string2_list)
-        return render_template('melexpos2.html')
-    return render_template('melexpos2.html')
+# things to work on tmr
+# 1. change the column name to detect by column number rather than name
+# 2. chnage the output in second column
+    # pandas dataframe to html table flask
+    uploaded_df = pd.DataFrame(uploaded_df)
+    uploaded_df_html = uploaded_df.to_html()
+
+    
+    return render_template('a.html', data_var = uploaded_df_html)
 
 @app.route("/<usr>")
 def user(usr):
