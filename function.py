@@ -31,7 +31,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.ml.feature import Tokenizer
 from operator import add
-
+import joblib
 
 def convert_string2_list(text):
     return ast.literal_eval(str(text))
@@ -94,6 +94,11 @@ def pos_tag1(sentence, model):
     sentence = sentence_splitter(sentence)
     sentence_features = [features(sentence, index) for index in range(len(sentence))]
     return list(zip(sentence, model.predict([sentence_features])[0]))
+
+# model = joblib.load("Andrew_CRF_model.joblib")
+# def pos_tag2(sentence):
+#     sentence_features = [features(sentence, index) for index in range(len(sentence))]
+#     return list(zip(sentence, model.predict([sentence_features])[0]))
 
 def sentence_splitter(sentence):
     result = []

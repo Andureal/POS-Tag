@@ -207,26 +207,31 @@ def processFile():
     # read csv file in python flask (reading uploaded csv file from uploaded server location)
     uploaded_df = pd.read_csv(data_file_path)
 
-    #df['normalised_word'] = df['Word'].apply(pre.normalise)
-    #df['col1'] = df['col1'].apply(complex_function)
+    uploaded_df.iloc[:, 0] = uploaded_df['Sentence']
+    uploaded_df.iloc[:, 1] = uploaded_df['Tagged_Sentence']
+
+    loaded_model = joblib.load("Andrew_CRF_model.joblib")
     
-
     for row in range(len(uploaded_df)):
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_emoji)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(normalise)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_punct_url_at)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_non_ascii)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_slashR)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_special_char)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_multiple_space)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_newline)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(replace_apostrophes)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_multiple_comma)
-        uploaded_df['Sentence'] = uploaded_df['Sentence'].apply(remove_multiple_dot)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Sentence']
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_emoji)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(normalise)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_punct_url_at)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_non_ascii)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_slashR)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_special_char)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_multiple_space)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_newline)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(replace_apostrophes)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_multiple_comma)
+        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_multiple_dot)
+        tempo =""
+        tempo = uploaded_df['Tagged_Sentence']
+        tempo = pos_tag1(str(tempo), loaded_model)
+        uploaded_df['Tagged_Sentence'] = pd.Series(tempo)
+        #uploaded_df['Tagged_Sentence'] = str(uploaded_df['Tagged_Sentence'])
+        #uploaded_df['Tagged_Sentence'] = pos_tag1(str(uploaded_df['Tagged_Sentence']), loaded_model)
 
-# things to work on tmr
-# 1. change the column name to detect by column number rather than name
-# 2. chnage the output in second column
     # pandas dataframe to html table flask
     uploaded_df = pd.DataFrame(uploaded_df)
     uploaded_df_html = uploaded_df.to_html()
