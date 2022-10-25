@@ -232,10 +232,18 @@ def processFile():
     #uploaded_df.loc[1, "Tagged_Sentence"] = pos_tag1(uploaded_df.loc[1, "Tagged_Sentence"], loaded_model)
     # pandas dataframe to html table flask
     uploaded_df = pd.DataFrame(uploaded_df)
+    uploaded_df.to_csv('ProcessedFile.csv')
     uploaded_df_html = uploaded_df.to_html()
 
     
-    return render_template('a.html', data_var = uploaded_df_html)
+    return render_template('showprocessfile.html')
+
+@app.route('/return-process-files/')
+def return_files_proceess_tut():
+	try:
+		return send_file('ProcessedFile.csv', as_attachment=True)
+	except Exception as e:
+		return str(e)
 
 @app.route("/<usr>")
 def user(usr):
