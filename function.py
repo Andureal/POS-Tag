@@ -95,18 +95,14 @@ def pos_tag1(sentence, model):
     sentence_features = [features(sentence, index) for index in range(len(sentence))]
     return list(zip(sentence, model.predict([sentence_features])[0]))
 
-# model = joblib.load("Andrew_CRF_model.joblib")
-# def pos_tag2(sentence):
-#     sentence_features = [features(sentence, index) for index in range(len(sentence))]
-#     return list(zip(sentence, model.predict([sentence_features])[0]))
+model = joblib.load("Andrew_CRF_model.joblib")
+def pos_tag2(sentence):
+    sentence_features = [features(sentence, index) for index in range(len(sentence))]
+    return list(zip(sentence, model.predict([sentence_features])[0]))
 
 def sentence_splitter(sentence):
     result = []
     sents = word_tokenize(sentence)
     for s in sents:
-        if re.findall(r'[\u4e00-\u9fff]+', s):
-            s = HanziConv.toSimplified(s)
-            result = result + list(jieba.cut(s, cut_all=False))
-        else:
             result.append(s)
     return result

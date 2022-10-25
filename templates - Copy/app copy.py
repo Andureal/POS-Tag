@@ -205,14 +205,14 @@ def processFile():
     data_file_path = session.get('uploaded_data_file_path', None)
  
     # read csv file in python flask (reading uploaded csv file from uploaded server location)
-    uploaded_df = pd.read_csv(data_file_path, usecols=['Sentence'])
+    uploaded_df = pd.read_csv(data_file_path)
 
-    # uploaded_df.iloc[:, 0] = uploaded_df['Sentence']
-    # uploaded_df.iloc[:, 1] = uploaded_df['Tagged_Sentence']
+    uploaded_df.iloc[:, 0] = uploaded_df['Sentence']
+    uploaded_df.iloc[:, 1] = uploaded_df['Tagged_Sentence']
 
     loaded_model = joblib.load("Andrew_CRF_model.joblib")
     
-    for i in range(len(uploaded_df)):
+    for row in range(len(uploaded_df)):
         uploaded_df['Tagged_Sentence'] = uploaded_df['Sentence']
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_emoji)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(normalise)
@@ -225,11 +225,13 @@ def processFile():
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(replace_apostrophes)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_multiple_comma)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_multiple_dot)
-        # uploaded_df['Tagged_Sentence'] = str(uploaded_df['Tagged_Sentence'])
-        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].astype(str);
-        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(lambda x:pos_tag1(x, loaded_model))
-    
-    #uploaded_df.loc[1, "Tagged_Sentence"] = pos_tag1(uploaded_df.loc[1, "Tagged_Sentence"], loaded_model)
+        tempo =""
+        tempo = uploaded_df['Tagged_Sentence']
+        tempo = pos_tag1(str(tempo), loaded_model)
+        uploaded_df['Tagged_Sentence'] = pd.Series(tempo)
+        #uploaded_df['Tagged_Sentence'] = str(uploaded_df['Tagged_Sentence'])
+        #uploaded_df['Tagged_Sentence'] = pos_tag1(str(uploaded_df['Tagged_Sentence']), loaded_model)
+
     # pandas dataframe to html table flask
     uploaded_df = pd.DataFrame(uploaded_df)
     uploaded_df_html = uploaded_df.to_html()
