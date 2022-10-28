@@ -77,12 +77,8 @@ def demo():
         user = request.form["nm"]
         if request.form['submit_button'] == 'preprocess':
             user = normalise(str(user))
-            user = remove_punct_url_at(str(user))
-            
-            
             user = remove_non_ascii(str(user))
             user = remove_slashR(str(user))
-            user = remove_special_char(str(user))
             user = remove_emoji(str(user))
             user = remove_multiple_space(str(user))
             user = remove_newline(str(user))
@@ -97,11 +93,8 @@ def demo():
         
         elif request.form['submit_button'] == 'P & P':
             user = normalise(str(user))
-            user = remove_punct_url_at(str(user))
-            
             user = remove_non_ascii(str(user))
             user = remove_slashR(str(user))
-            user = remove_special_char(str(user))
             user = remove_emoji(str(user))
             user = remove_multiple_space(str(user))
             user = remove_newline(str(user))
@@ -144,7 +137,7 @@ def showData():
     uploaded_df = pd.read_csv(data_file_path)
 
     # data = uploaded_df["tagged"]
-    data = uploaded_df["tagged"].apply(convert_string2_list)
+    data = uploaded_df["Tagged_Sentence"].apply(convert_string2_list)
 
     
 
@@ -216,10 +209,8 @@ def processFile():
         uploaded_df['Tagged_Sentence'] = uploaded_df['Sentence']
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_emoji)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(normalise)
-        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_punct_url_at)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_non_ascii)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_slashR)
-        uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_special_char)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_multiple_space)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(remove_newline)
         uploaded_df['Tagged_Sentence'] = uploaded_df['Tagged_Sentence'].apply(replace_apostrophes)

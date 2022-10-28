@@ -34,9 +34,9 @@ def normalise(text):
     text = text.lower()
     return text
 
-def remove_punct_url_at(text):
-    text = re.sub(r"(@\[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|^rt|http.+?", "", text)
-    return text
+# def remove_punct_url_at(text):
+#     text = re.sub(r"(@\[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)|^rt|http.+?", "", text)
+#     return text
     
 def remove_stopword_nltk(text):
     text_tokens = word_tokenize(text)
@@ -52,8 +52,8 @@ def remove_non_ascii(text):
 def remove_slashR(text):
     return re.sub('\r', ' ', text)
 
-def remove_special_char(text):
-    return re.sub('&quot;|"|“|”', '', text)
+# def remove_special_char(text):
+#     return re.sub('&quot;|"|“|”', '', text)
 
 # def remove_emoji(text):
 #     return emoji.get_emoji_regexp().sub('', text)
