@@ -31,17 +31,33 @@
          <a href="demo" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Demo</a>
          <a href="crfmodel" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">CRF Model</a>
          <a href="melexpos" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">MELEX & POS </a>
-         <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">About Us</a>
+         <a href="display" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Display/a>
       </div>
 
       <div class="w3-row-padding w3-padding-64 w3-container">
             <div class="w3-content">
-              <h2>Click the download button below to download your custom CRF model</h2>
-              <a href="/return-process-files/" target="blank"><button class='btn btn-default'>Download!</button></a>
+                <h1>Insert a csv file to preprocess and POS tag your untagged dataset automatically</h1>
+                <p>Kindly insert your csv file below</p>
+                <form method="POST" enctype="multipart/form-data" action ="/melexpos">
+                    <input type="file" id="myFile" name="uploaded-file" accept=".csv">
+                    <input type="submit" value="Upload file">
+                </form> 
 
+                <br>
+                <p style="color:green;">file uploaded successfully</p>
+                        <form action="/process_file" target="_blank">
+                            <input type="submit" value="Submit CSV" />
+                        </form>
             </div>
       </div>
-\
+
+      <div class="w3-row-padding w3-padding-64 w3-container">
+        <div class="w3-content">
+          <h2>Click the download button below to download your custom CRF model</h2>
+          <a href="/return-process-files/" target="blank"><button class='btn btn-default'>Download!</button></a>
+
+        </div>
+  </div>
 
     </div>
 

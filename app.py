@@ -203,7 +203,7 @@ def processFile():
     # uploaded_df.iloc[:, 0] = uploaded_df['Sentence']
     # uploaded_df.iloc[:, 1] = uploaded_df['Tagged_Sentence']
 
-    loaded_model = joblib.load("Andrew_CRF_model.joblib")
+    loaded_model = joblib.load("Andrew_CRF_model_updated.joblib")
     
     for i in range(len(uploaded_df)):
         uploaded_df['Tagged_Sentence'] = uploaded_df['Sentence']
@@ -235,6 +235,36 @@ def return_files_proceess_tut():
 		return send_file('ProcessedFile.csv', as_attachment=True)
 	except Exception as e:
 		return str(e)
+
+@app.route("/display",  methods=("POST", "GET"))
+def display():
+    if request.method == 'POST':
+        # upload file flask
+        uploaded_df = request.files['uploaded-file']
+ 
+        # Extracting uploaded data file name
+        data_filename = secure_filename(uploaded_df.filename)
+ 
+        # flask upload file to database (defined uploaded folder in static path)
+        uploaded_df.save(os.path.join(app.config['UPLOAD_FOLDER'], data_filename))
+ 
+        # Storing uploaded file path in flask session
+        session['uploaded_data_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
+
+        return render_template('display2.html')      
+    return render_template('display.html') 
+
+@app.route('/display_result')
+def displayResult():
+    # Retrieving uploaded file path from session
+    data_file_path = session.get('uploaded_data_file_path', None)
+ 
+    # read csv file in python flask (reading uploaded csv file from uploaded server location)
+    uploaded_df = pd.read_csv(data_file_path, usecols=['Sentence', "Tagged_Sentence"])
+    uploaded_df_html = uploaded_df.to_html()
+
+
+    return render_template('display_result_table.html', data_var = uploaded_df_html )
 
 @app.route("/<usr>")
 def user(usr):
