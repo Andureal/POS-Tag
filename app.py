@@ -91,7 +91,7 @@ def demo():
         elif request.form['submit_button'] == 'pos tag':
             user = pos_tag1(user, loaded_model)
         
-        elif request.form['submit_button'] == 'P & P':
+        elif request.form['submit_button'] == 'All':
             user = normalise(str(user))
             user = remove_non_ascii(str(user))
             user = remove_slashR(str(user))
@@ -137,7 +137,7 @@ def showData():
     uploaded_df = pd.read_csv(data_file_path)
 
     # data = uploaded_df["tagged"]
-    data = uploaded_df["Tagged_Sentence"].apply(convert_string2_list)
+    data = uploaded_df["tagged"].apply(convert_string2_list)
 
     
 
@@ -161,7 +161,7 @@ def showData():
     # data = data.to_frame()
     # uploaded_df_html = data.to_html()
 
-    filename = "latestCRF.joblib"
+    filename = "Andrew_CRF_model copy.joblib"
     joblib.dump(CRF_model_lbfgs, filename)
     
     return render_template('show_csv_data.html')
@@ -203,7 +203,7 @@ def processFile():
     # uploaded_df.iloc[:, 0] = uploaded_df['Sentence']
     # uploaded_df.iloc[:, 1] = uploaded_df['Tagged_Sentence']
 
-    loaded_model = joblib.load("Andrew_CRF_model_updated.joblib")
+    loaded_model = joblib.load("Andrew_CRF_model copy.joblib")
     
     for i in range(len(uploaded_df)):
         uploaded_df['Tagged_Sentence'] = uploaded_df['Sentence']
@@ -266,9 +266,62 @@ def displayResult():
 
     return render_template('display_result_table.html', data_var = uploaded_df_html )
 
+@app.route("/combine",  methods=("POST", "GET"))
+def combine():
+    if request.method == 'POST':
+        # upload file flask
+        uploaded_df = request.files['uploaded-file']
+ 
+        # Extracting uploaded data file name
+        data_filename = secure_filename(uploaded_df.filename)
+ 
+        # flask upload file to database (defined uploaded folder in static path)
+        uploaded_df.save(os.path.join(app.config['UPLOAD_FOLDER'], data_filename))
+ 
+        # Storing uploaded file path in flask session
+        session['uploaded_data_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
+
+        return render_template('combine2.html')      
+    return render_template('combine.html') 
+
+from dask.dataframe import read_csv, concat
+
+@app.route('/combined_file')
+def combineFile():
+    # Retrieving uploaded file path from session
+    data_file_path = session.get('uploaded_data_file_path', None)
+ 
+    # read csv file in python flask (reading uploaded csv file from uploaded server location)
+    uploaded_df = pd.read_csv(data_file_path, usecols=["Tagged_Sentence"])
+    uploaded_df = uploaded_df.rename({'Tagged_Sentence': 'tagged'}, axis=1)
+    uploaded_df_html = uploaded_df.to_html()
+
+    df2 = pd.read_csv('static/uploads/train_latest.csv', usecols=["tagged"])
+    #df2 = df2.rename({'Tagged_Sentence': 'tagged'}, axis=1)
+
+    final_df = pd.concat([uploaded_df, df2])
+    final_df_html = final_df.to_html()
+    final_df.to_csv('CombinedFile.csv')
+    df2_html = df2.to_html()
+
+    return render_template('combine3.html', data_var = final_df_html )
+
+@app.route('/return-combine/')
+def return_files_combined_tut():
+	try:
+		return send_file('CombinedFile.csv', as_attachment=True)
+	except Exception as e:
+		return str(e)
+
 @app.route("/<usr>")
 def user(usr):
     return f"<h1>{usr}</h1>"
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# read already put in train_latest
+# combine both file with the link(https://stackoverflow.com/questions/72598245/is-that-possible-to-concatmerge-csv-file-without-reading-python-jupyter)
+# combine alr train CRF model. Can try upload csv train alr then update the main CRF folder then train the same sentence
+# things need to preapre a dataset with changed value and unchaanged for enxt week presentation
+#prepare a slide. go through one time the process a)process csv file show result b) manually change c) combine the csv with ori file d) use new csv file to train csv e) show again new tagged data with updated CRF

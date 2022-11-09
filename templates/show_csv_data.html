@@ -17,7 +17,7 @@
     .fa-anchor,.fa-coffee {font-size:200px}
     
     body {
-        background-image: url("https://cdn.mos.cms.futurecdn.net/YMa7Wx2FyjQFUjEeqa72Rm-1200-80.jpg");
+        background-image: url("https://thumbs.dreamstime.com/b/parts-speech-english-grammar-wood-framed-blackboard-two-turqoise-magnets-corner-textured-background-chalk-writing-232048992.jpg");
         background-repeat: no-repeat;
         background-size: cover;
         
@@ -36,11 +36,10 @@
            <a href="crfmodel" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">CRF Model</a>
            <a href="melexpos" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">MELEX & POS </a>
            <a href="display" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Display</a>
+           <a href="combine " class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Combine</a>
         </div>
         <div class="w3-row-padding w3-padding-64 w3-container">
             <div class="w3-content">
-
-                
                 <h1>Build Own CRF Model</h1>
                 <p>Insert csv file to be train in the CRF model</p>
                 <form method="POST" enctype="multipart/form-data" action="/crfmodel">
@@ -53,17 +52,16 @@
                         <form action="/show_data" target="_blank">
                             <input type="submit" value="Show CSV" />
                         </form>
+
+                <h2>Click the download button below to download your custom CRF model</h2>
+                <a href="/return-files/" target="blank"><button class='btn btn-default'>Download!</button></a>
             </div>
+
+            
+
             
         </div>
 
-        div class="w3-row-padding w3-padding-64 w3-container">
-            <div class="w3-content">
-              <h2>Click the download button below to download your custom CRF model</h2>
-              <a href="/return-files/" target="blank"><button class='btn btn-default'>Download!</button></a>
-
-            </div>
-    </div>
 
     <body>
         
