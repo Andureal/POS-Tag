@@ -69,7 +69,7 @@ def hello_world():
     occupation = "Programmer | Data Lab Research Assistant "
     return render_template('index.html', name=name, age=age, occupation=occupation)
 
-
+### This is for demo website
 @app.route('/demo', methods=["GET", "POST"])
 def demo():
     loaded_model = joblib.load("Andrew_CRF_model.joblib")
@@ -108,7 +108,9 @@ def demo():
 
     else:
         return render_template("demo.html")
-    
+
+
+### This for CRF Model website ###
 @app.route('/crfmodel',  methods=("POST", "GET"))
 def crfmodel():
     if request.method == 'POST':
@@ -173,6 +175,8 @@ def return_files_tut():
 	except Exception as e:
 		return str(e)
 
+
+### This for POS taggin big file website ###
 @app.route("/melexpos",  methods=("POST", "GET"))
 def melexpos():
     if request.method == 'POST':
@@ -236,6 +240,8 @@ def return_files_proceess_tut():
 	except Exception as e:
 		return str(e)
 
+
+### This for display file website ###
 @app.route("/display",  methods=("POST", "GET"))
 def display():
     if request.method == 'POST':
@@ -266,6 +272,7 @@ def displayResult():
 
     return render_template('display_result_table.html', data_var = uploaded_df_html )
 
+### This for combine file website ###
 @app.route("/combine",  methods=("POST", "GET"))
 def combine():
     if request.method == 'POST':
@@ -312,6 +319,8 @@ def return_files_combined_tut():
 		return send_file('CombinedFile.csv', as_attachment=True)
 	except Exception as e:
 		return str(e)
+
+### This is the end of all functions
 
 @app.route("/<usr>")
 def user(usr):
